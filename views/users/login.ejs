@@ -1,0 +1,28 @@
+<% layout('layouts/boilerplate') %> 
+<h1 style = "text-align: center;" >Login</h1>
+
+
+<form action="/login" method= "POST" class = "validated-form" novalidate>
+    <div class="row col-md-6 w-50 container d-flex mx-auto mb-4">
+    <div class="card shadow" style= "width: 200;">
+        <div class="card-body"><label for="username" class="form-label">Username</label>
+            <input type="text" id= "username" class = "form-control" name = "username" autofocus required>
+            <div class="valid-feedback">
+                Looks good!
+            </div>
+            
+            
+                <label for="username" class="form-label">Password</label>
+                <input type="password" id= "password" class = "form-control" name = "password"  required>
+                <div class="valid-feedback">
+                    Looks good!
+                </div>
+            
+            <button class="btn btn-block btn-success mt-4 mb-4">Login</button>
+        </div>
+        </div>
+    </div>
+    
+
+    
+</form> 
