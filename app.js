@@ -20,7 +20,7 @@ const User = require('./models/user.js');
 //removes Mongo injections
 const mongoSanitize = require('express-mongo-sanitize')
 const helmet = require('helmet');
-const dbURL = process.env.DB_URL
+const dbURL = process.env.DB_URL;
 const MongoDBStore = require('connect-mongo');
 
 //import routers
