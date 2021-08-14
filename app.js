@@ -23,11 +23,6 @@ const helmet = require('helmet');
 const dbURL = process.env.DB_URL;
 const MongoDBStore = require('connect-mongo');
 
-//import routers
-const userRoutes = require('./routes/users');
-const campgrounds = require('./routes/campgrounds')
-const reviews = require('./routes/reviews')
-
 //local storage for flash msg & user variables
 app.use( (req,res,next) => {
     res.locals.currentUser = req.user;
@@ -35,6 +30,13 @@ app.use( (req,res,next) => {
     res.locals.error = req.flash('error');
     next();
 })
+
+
+//import routers
+const userRoutes = require('./routes/users');
+const campgrounds = require('./routes/campgrounds')
+const reviews = require('./routes/reviews')
+
 
 //helmet configuration for content security policy
 const scriptSrcUrls = [
