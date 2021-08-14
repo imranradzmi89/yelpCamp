@@ -20,7 +20,7 @@ const User = require('./models/user.js');
 //removes Mongo injections
 const mongoSanitize = require('express-mongo-sanitize')
 const helmet = require('helmet');
-const dbURL = process.env.DB_URL;
+const dbURL = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp'
 const MongoDBStore = require('connect-mongo');
 //import routers
 const userRoutes = require('./routes/users');
@@ -33,13 +33,7 @@ mongoose.connect(dbURL ,
         useCreateIndex: true,
         useUnifiedTopology: true,
         useFindAndModify : false
-    }).
-catch (err => console.error(err));
-
-
-
-app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride('_method'));
+    })
 
 const db = mongoose.connection;
 db.on('error' , console.error.bind(console , "connection error: "))
@@ -54,6 +48,38 @@ app.set('views' , path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
+
+
+//connect-mongo configuration
+const store = new MongoDBStore({
+    mongoUrl: dbURL,
+    collection: 'sessions',
+    secret: 'bettersecret',
+    touchAfter: 24*60*60
+})
+
+store.on('error', (e) => {
+    console.log('Session Store Error')
+})
+
+//config & use cookies & msg flash
+const sessionConfig = {
+    store: store,
+    name: 'session',
+    secret : 'shouldbeabettersecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,
+        expires: Date.now() + 1000*3600*24*7,
+        maxAge: 1000*3600*24*7
+    }
+}
+app.use(session(sessionConfig));
+app.use(flash());
+app.use(helmet());
 
 //helmet configuration for content security policy
 const scriptSrcUrls = [
@@ -104,44 +130,6 @@ app.use(
     })
 );
 
-
-
-//connect-mongo configuration
-const store = new MongoDBStore({
-    mongoUrl: dbURL,
-    collection: 'sessions',
-    secret: 'bettersecret',
-    touchAfter: 24*60*60
-})
-
-store.on('error', (e) => {
-    console.log('Session Store Error')
-})
-
-//config & use cookies & msg flash
-const sessionConfig = {
-    store: store,
-    name: 'session',
-    secret : 'shouldbeabettersecret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,
-        expires: Date.now() + 1000*3600*24*7,
-        maxAge: 1000*3600*24*7
-    }
-}
-app.use(session(sessionConfig));
-app.use(flash());
-
-
-
-
-
-
-
-
-
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -155,8 +143,6 @@ app.use( (req,res,next) => {
     res.locals.error = req.flash('error');
     next();
 })
-
-
 
 
 //router middleware
