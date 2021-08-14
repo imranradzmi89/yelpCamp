@@ -28,6 +28,14 @@ const userRoutes = require('./routes/users');
 const campgrounds = require('./routes/campgrounds')
 const reviews = require('./routes/reviews')
 
+//local storage for flash msg & user variables
+app.use( (req,res,next) => {
+    res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+})
+
 //helmet configuration for content security policy
 const scriptSrcUrls = [
     "https://stackpath.bootstrapcdn.com/",
@@ -143,13 +151,7 @@ db.once('open' , () => {
 })
 
 
-//local storage for flash msg & user variables
-app.use( (req,res,next) => {
-    res.locals.currentUser = req.user;
-    res.locals.success = req.flash('success');
-    res.locals.error = req.flash('error');
-    next();
-})
+
 
 //router middleware
 app.use('/campgrounds' , campgrounds)
