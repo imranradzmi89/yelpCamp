@@ -4,6 +4,13 @@ const catchAsync = require('../utilities/catchAsync');
 const passport = require('passport')
 const User = require('../models/user')
 
+router.use( (req,res,next) => {
+    res.locals.currentUser = req.user;
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+})
+
 router.get('/register' , (req,res) => {
     res.render('users/register')
 })

@@ -10,7 +10,6 @@ const {storage} = require('../cloudinary');
 const upload = multer({storage});
 
 
-
 //show all or create new camp routes
 router.route('/')
 .get(catchAsync (campgrounds.index))

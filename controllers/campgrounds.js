@@ -4,8 +4,11 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
 const mapboxToken = process.env.MAPBOX_TOKEN;
 const geocoder = mbxGeocoding({accessToken : mapboxToken});
 
+
+
 module.exports.index = async (req,res) => {
-    const campgrounds = await Campground.find({})
+    const campgrounds = await Campground.find({});
+    
     res.render('campgrounds/index' ,{campgrounds} );
     }
 
@@ -30,7 +33,7 @@ module.exports.createCamp = async (req,res,next) => {
 }
 
 module.exports.showCampground = async (req,res) => {
-    const campground = await Campground.findById(req.params.id).populate({
+     const campground = await Campground.findById(req.params.id).populate({
         path: 'reviews',
         populate: {
             path: 'author'
@@ -40,7 +43,8 @@ module.exports.showCampground = async (req,res) => {
         req.flash('error' , 'Campground listing not found!')
         return res.redirect('/campgrounds');
     }
-    res.render('campgrounds/show' , {campground })
+    console.log(req.user)
+    res.render('campgrounds/show' , {campground})
 }
 
 module.exports.renderEditForm = async (req,res) => {

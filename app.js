@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const router = require('express').Router();
 const path = require('path');
 const mongoose = require('mongoose');
 const ejsMate = require('ejs-mate');
@@ -46,10 +47,10 @@ app.set('view engine', 'ejs');
 app.set('views' , path.join(__dirname, 'views'));
 //middleware to serve static assets
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(mongoSanitize());
-
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'));
+app.use(mongoSanitize());
+
 
 
 //connect-mongo configuration
@@ -122,7 +123,7 @@ app.use(
                 "'self'",
                 "blob:",
                 "data:",
-                "https://res.cloudinary.com/dudfcjvoe/", //SHOULD MATCH YOUR CLOUDINARY ACCOUNT! 
+                "https://res.cloudinary.com/dudfcjvoe/", 
                 "https://images.unsplash.com/",
             ],
             fontSrc: ["'self'", ...fontSrcUrls],
@@ -130,21 +131,22 @@ app.use(
     })
 );
 
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// local storage for flash msg & user variables
+
+
 app.use( (req,res,next) => {
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
 })
-
-
 //router middleware
 app.use('/campgrounds' , campgrounds)
 app.use('/campgrounds/:id/reviews' , reviews)
