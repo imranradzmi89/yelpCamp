@@ -29,6 +29,7 @@
               <h6>Description:</h6>
               <p class="card-text"><%= campground.description  %> </p>
               <hr>
+              
               <h6>Details of Campground:</h6>
               <p></p>
               <hr>
@@ -36,8 +37,7 @@
               <hr>
               <p class = "card-text">Located in <%= campground.location  %> </p>
               <div class = "mx-auto mb-2" id='map' style='width: 400px; height: 300px;'></div>
-              <p class = "card-text mb-3">Added by <%= campground.author  %> </p>
-            
+              <p class="card-text">Added By <%= campground.author.username  %> </p>
             
               
               

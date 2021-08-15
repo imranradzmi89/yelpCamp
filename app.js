@@ -25,8 +25,10 @@ const dbURL = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp'
 const MongoDBStore = require('connect-mongo');
 //import routers
 const userRoutes = require('./routes/users');
-const campgrounds = require('./routes/campgrounds')
-const reviews = require('./routes/reviews')
+const campgrounds = require('./routes/campgrounds');
+const reviews = require('./routes/reviews');
+
+
 
 mongoose.connect(dbURL ,
     {
@@ -41,6 +43,8 @@ db.on('error' , console.error.bind(console , "connection error: "))
 db.once('open' , () => {
     console.log('Database Connected!')
 })
+
+
 
 app.engine('ejs' , ejsMate)
 app.set('view engine', 'ejs');

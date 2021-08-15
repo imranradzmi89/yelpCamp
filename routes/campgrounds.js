@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utilities/catchAsync');
-const Campground = require('../models/campground');
 const campgrounds = require('../controllers/campgrounds')
 //authenticator middleware using passport's in-built helper
 const {isLoggedIn , isAuthor, validateCampground} = require('../middleware.js');
