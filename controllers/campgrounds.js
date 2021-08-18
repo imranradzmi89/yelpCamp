@@ -3,15 +3,37 @@ const {cloudinary} = require('../cloudinary')
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding')
 const mapboxToken = process.env.MAPBOX_TOKEN;
 const geocoder = mbxGeocoding({accessToken : mapboxToken});
-
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+};
 
 
 module.exports.index = async (req,res) => {
-    const campgrounds = await Campground.find({});
-    console.log(req.user)
-    res.render('campgrounds/index' ,{campgrounds} );
+    var noMatch = null;
+    if(req.query.search) {
+        const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+        // Get all campgrounds from DB
+        Campground.find({title: regex}, function(err, allCampgrounds){
+           if(err){
+               console.log(err);
+           } else {
+              if(allCampgrounds.length < 1) {
+                  noMatch = "No campgrounds match that query, please try again.";
+              }
+              res.render("campgrounds/index",{campgrounds:allCampgrounds, noMatch: noMatch});
+           }
+        });
+    } else {
+        // Get all campgrounds from DB
+        Campground.find({}, function(err, allCampgrounds){
+           if(err){
+               console.log(err);
+           } else {
+              res.render("campgrounds/index",{campgrounds:allCampgrounds, noMatch: noMatch});
+           }
+        });
     }
-
+}
 module.exports.newCampForm = (req,res) => {
     res.render('campgrounds/new');
 }
